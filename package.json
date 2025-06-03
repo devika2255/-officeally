@@ -1,0 +1,15 @@
+{
+  "name": "snmdevapp",
+  "version": "1.0.0",
+  "main": "fetchWebflowData.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node fetchWebflowData.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "node-fetch": "^3.3.2",
+    "webflow-api": "^2.0.0"
+  }
+}
