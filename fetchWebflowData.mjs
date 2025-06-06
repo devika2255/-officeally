@@ -147,22 +147,7 @@ app.post("/webflow-webhook", async (req, res) => {
   }
 });
 
-// On server start, sync all items
-async function syncAllItemsOnStart() {
-  const items = await fetchWebflowCollectionItems();
 
-  const updates = items.map((item) => ({
-    itemId: item.id,
-    fields: {
-      name: item.fieldData.name,
-      slug: item.fieldData.slug,
-      "sort-field": item.fieldData.name.toUpperCase(),
-    },
-  }));
-
-  console.log(`Processing ${updates.length} items to update sort-field...`);
-  await updateWebflowCollectionItems(updates);
-}
 
 // Start server
 app.listen(port, "0.0.0.0", async () => {
