@@ -33,38 +33,7 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Fetch all items with pagination
-async function fetchWebflowCollectionItems() {
-  console.log("Fetching all Webflow collection items...");
-  const allItems = [];
-  let offset = 0;
-  const limit = 100;
-
-  while (true) {
-    try {
-      const response = await client.collections.items.listItems(collectionId, {
-        limit,
-        offset,
-      });
-
-      allItems.push(...response.items);
-
-      if (response.items.length < limit) {
-        break;
-      }
-
-      offset += limit;
-    } catch (error) {
-      console.error("Error fetching items:", error.message || error);
-      break;
-    }
-  }
-
-  console.log(`Fetched ${allItems.length} items total`);
-  return allItems;
-}
-
-// Update items with new sort-field in uppercase
+// Update single item with new sort-field in uppercase
 async function updateWebflowCollectionItems(itemsToUpdate) {
   const results = [];
 
@@ -76,7 +45,7 @@ async function updateWebflowCollectionItems(itemsToUpdate) {
 
     const fieldData = {
       ...fields,
-      "sort-field": fields.name.toUpperCase(),  // force uppercase here as well for safety
+      "sort-field": fields.name.toUpperCase(),
       _archived: false,
       _draft: false,
     };
@@ -105,7 +74,7 @@ async function updateWebflowCollectionItems(itemsToUpdate) {
       console.log(`Updated item: ${itemId}`);
       results.push({ itemId, success: true, item: updated });
 
-      await delay(1000);
+      await delay(1000); // optional: prevent Webflow rate limit
     } catch (err) {
       console.error(`Network error on ${itemId}:`, err.message);
       results.push({ itemId, success: false, error: err.message });
@@ -115,10 +84,11 @@ async function updateWebflowCollectionItems(itemsToUpdate) {
   return results;
 }
 
-// Webhook handler
+// Webhook handler for newly created items
 app.post("/webflow-webhook", async (req, res) => {
   try {
     const payload = req.body.payload;
+
     if (!payload || !payload.id) {
       return res.status(400).send("Missing payload or item ID");
     }
@@ -135,7 +105,10 @@ app.post("/webflow-webhook", async (req, res) => {
       "sort-field": payload.fieldData.name.toUpperCase(),
     };
 
-    console.log("Name:", payload.fieldData.name, "sort-field:", fields["sort-field"]);
+    console.log("New item received:", {
+      name: fields.name,
+      "sort-field": fields["sort-field"],
+    });
 
     const updates = [{ itemId, fields }];
     const updateResults = await updateWebflowCollectionItems(updates);
@@ -147,10 +120,7 @@ app.post("/webflow-webhook", async (req, res) => {
   }
 });
 
-
-
-// Start server
-app.listen(port, "0.0.0.0", async () => {
+// Start server without syncing all items
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server is running on port ${port}`);
-  await syncAllItemsOnStart();
 });
