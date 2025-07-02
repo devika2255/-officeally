@@ -12,8 +12,6 @@ const port = process.env.PORT || 3000;
 // Webflow credentials
 const webflowApiKey = process.env.WEBFLOW_API_KEY;
 const collectionId = process.env.WEBFLOW_COLLECTION_ID;
-const port = process.env.PORT || 3000;
-
 
 // Webflow client
 const client = new WebflowClient({ accessToken: webflowApiKey });
