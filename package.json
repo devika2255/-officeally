@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
     "express": "^4.17.1",
     "node-fetch": "^3.3.2",
     "webflow-api": "^2.0.0"

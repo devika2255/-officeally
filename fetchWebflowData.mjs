@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import fetch from "node-fetch";
 import { WebflowClient } from "webflow-api";
@@ -7,8 +10,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Webflow credentials
-const webflowApiKey = "e955e9bc52388f9653ebdc2026c192fd7f2028c0e0100ba1437808d3cb2fb3ca";
-const collectionId = "6717fea435e253ccdf9a12b8";
+const webflowApiKey = process.env.WEBFLOW_API_KEY;
+const collectionId = process.env.WEBFLOW_COLLECTION_ID;
+const port = process.env.PORT || 3000;
+
 
 // Webflow client
 const client = new WebflowClient({ accessToken: webflowApiKey });
